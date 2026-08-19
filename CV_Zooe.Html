@@ -1,121 +1,264 @@
-      <!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>CV Zoe Valerie</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #ffe6f0; /* Pink muda */
-      margin: 0;
-      padding: 0;
-    }
-    .cv-container {
-      width: 80%;
-      margin: 40px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      border: 3px solid #ffb6c1;
-      position: relative;
-    }
-    h1, h2 {
-      color: #d63384;
-    }
-    .header {
-      text-align: center;
-      border-bottom: 2px dashed #ffb6c1;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
-    }
-    .section {
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style-type: "🌸 ";
-      padding-left: 20px;
-    }
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: #555;
-      margin-top: 30px;
-    }
-    /* Hiasan */
-    .cv-container::before, .cv-container::after {
-      content: "🌺";
-      font-size: 32px;
-      position: absolute;
-      color: #ff69b4;
-    }
-    .cv-container::before {
-      top: -20px;
-      left: -20px;
-    }
-    .cv-container::after {
-      bottom: -20px;
-      right: -20px;
-    }
-    a {
-      color: #d63384;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+<title>CV Zoe Valerie</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Poppins, Arial, sans-serif;
+    background:#ffe6ef;
+}
+
+.cv{
+    width:900px;
+    margin:40px auto;
+    display:flex;
+    background:white;
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 10px 30px #d9a0b5;
+}
+
+.left{
+    width:35%;
+    background:#ffd1df;
+    padding:30px;
+}
+
+.right{
+    width:65%;
+    padding:40px;
+}
+
+.photo{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:50%;
+    border:8px solid white;
+    display:block;
+    margin:auto;
+}
+
+h1{
+    color:#c94f82;
+    letter-spacing:8px;
+}
+
+h2,h3{
+    color:#c94f82;
+}
+
+h4{
+    color:#888;
+    letter-spacing:4px;
+}
+
+p{
+    color:#555;
+    line-height:1.7;
+}
+
+a{
+    text-decoration:none;
+    color:#555;
+}
+
+a:hover{
+    color:#d85b91;
+}
+
+.skill span{
+    display:inline-block;
+    background:#f7a8c5;
+    color:white;
+    padding:10px 20px;
+    border-radius:20px;
+    margin:5px;
+}
+
+button{
+    margin-top:30px;
+    background:#d85b91;
+    color:white;
+    border:none;
+    padding:15px 30px;
+    border-radius:30px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#b93c72;
+}
+
+
+.bubble1,.bubble2{
+    position:fixed;
+    border-radius:50%;
+    z-index:-1;
+}
+
+.bubble1{
+    width:200px;
+    height:200px;
+    background:#ffb6d2;
+    top:20px;
+    left:20px;
+}
+
+.bubble2{
+    width:250px;
+    height:250px;
+    background:#ffc8dd;
+    right:20px;
+    bottom:20px;
+}
+
+
+@media(max-width:800px){
+
+.cv{
+    width:95%;
+    flex-direction:column;
+}
+
+.left,.right{
+    width:auto;
+}
+
+}
+
+</style>
+
 </head>
+
+
 <body>
-  <div class="cv-container">
-    <div class="header">
-      <h1>Zoe Valerie</h1>
-      <p>
-        📞 <a href="tel:+6281222933329">+62 81222933329</a> | 
-        ✉️ <a href="mailto:1624043.zoe.valerie@penabur.sch.id">1624043.zoe.valerie@penabur.sch.id</a> | 
-        IG: <a href="https://instagram.com/zoevfy_" target="_blank">zoevfy_</a>
-      </p>
-      <p>Lokasi: Anywhere</p>
-    </div>
 
-    <div class="section">
-      <h2>🎓 Pendidikan</h2>
-      <ul>
-        <li>SDK BPK PENABUR HOLIS (2016-2022)</li>
-        <li>SMPK5 BPK PENABUR (2022-2025)</li>
-        <li>SMAK BPK PENABUR HOLIS (2025-sekarang)</li>
-      </ul>
-    </div>
+<div class="bubble1"></div>
+<div class="bubble2"></div>
 
-    <div class="section">
-      <h2>💡 Keahlian</h2>
-      <ul>
-        <li>Empati</li>
-        <li>Kreativitas</li>
-        <li>Kerjasama Tim</li>
-      </ul>
-    </div>
 
-    <div class="section">
-      <h2>🌐 Bahasa</h2>
-      <ul>
-        <li>Indonesia</li>
-        <li>English</li>
-      </ul>
-    </div>
+<div class="cv">
 
-    <div class="section">
-      <h2>👩‍🎓 Profil</h2>
-      <p>Saya lahir pada tanggal 30 Oktober 2010, anak pertama dari 3 bersaudara. Saat ini saya berada di kelas 11 (2 SMA).</p>
-      <p>Saya adalah pribadi yang perhatian, memiliki empati, dan suka membantu orang lain. Saya memiliki hobi memasak dan jalan-jalan, serta senang mencoba hal-hal baru.</p>
-      <p>Saya suka memasak karena menurut saya memasak itu menyenangkan dan saya bisa mencoba berbagai makanan atau resep baru. Saya juga suka jalan-jalan karena bisa mengunjungi tempat baru dan mendapatkan pengalaman yang berbeda.</p>
-    </div>
 
-    <div class="footer">
-      <p>© 2026 Zoe Valerie</p>
-    </div>
-  </div>
+<div class="left">
+
+<img src="foto.jpg" class="photo">
+
+
+<h3>Contact</h3>
+
+<p>
+<a href="tel:+628122933329">
+📞 +62 8122933329
+</a>
+</p>
+
+
+<p>
+<a href="mailto:1624043.zoe.valerie@penabur.sch.id">
+✉ 1624043.zoe.valerie@penabur.sch.id
+</a>
+</p>
+
+
+<p>
+<a href="https://instagram.com/zoevfy_" target="_blank">
+📷 Zoevfy_
+</a>
+</p>
+
+
+<p>📍 Anywhere</p>
+
+
+
+<h3>Education</h3>
+
+<p>
+SDK BPK PENABUR HOLIS<br>
+2016 - 2022
+</p>
+
+<p>
+SMPK 5 BPK PENABUR<br>
+2022 - 2025
+</p>
+
+<p>
+SMAK BPK PENABUR HOLIS<br>
+2025 - Sekarang
+</p>
+
+
+
+<h3>Language</h3>
+
+<p>Indonesia</p>
+<p>English</p>
+
+
+</div>
+
+
+
+<div class="right">
+
+
+<h1>ZOE VALERIE</h1>
+
+<h4>HIGH SCHOOL STUDENT</h4>
+
+
+<h2>♡ Profile</h2>
+
+
+<p>
+Saya lahir pada tanggal 30 Oktober 2010.
+Saya adalah anak pertama dari 3 bersaudara.
+Saat ini saya berada di kelas II SMA.
+</p>
+
+
+<p>
+Saya adalah pribadi yang perhatian, memiliki empati,
+dan suka membantu orang lain. Saya memiliki hobi
+memasak dan jalan-jalan serta senang mencoba hal-hal baru.
+</p>
+
+
+<p>
+Saya suka memasak karena dapat mencoba berbagai resep baru.
+Saya juga suka jalan-jalan karena bisa mengunjungi tempat baru
+dan mendapatkan pengalaman berbeda.
+</p>
+
+
+
+<h2>♡ Expertise</h2>
+
+<div class="skill">
+
+<span>Creativity</span>
+<span>Empathy</span>
+<span>Teamwork</span>
+
+</div>
+
+
+<button onclick="window.print()">
+Download CV
+</button>
+
+
+</div>
+
+
+</div>
+
+
 </body>
-</html>
- 
+</html> 
