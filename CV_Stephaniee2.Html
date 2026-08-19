@@ -20,6 +20,7 @@
       border-radius: 15px;
       overflow: hidden;
       position: relative;
+      padding-bottom: 60px;
     }
     .ribbon {
       width: 180px;
@@ -92,6 +93,22 @@
     a:hover {
       text-decoration: underline;
     }
+    .download-btn {
+      display: block;
+      width: 200px;
+      margin: 20px auto;
+      padding: 10px;
+      text-align: center;
+      background: #ff99cc;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .download-btn:hover {
+      background: #cc0066;
+    }
     @media (max-width: 768px) {
       .left, .right {
         width: 100%;
@@ -100,7 +117,7 @@
   </style>
 </head>
 <body>
-  <div class="cv-container">
+  <div class="cv-container" id="cv">
     <div class="ribbon">Curriculum Vitae</div>
     <div class="header">
       <img src="foto.jpg" alt="Foto Stephanie">
@@ -160,5 +177,17 @@
       </div>
     </div>
   </div>
+
+  <!-- Tombol Download PDF -->
+  <a href="#" class="download-btn" onclick="downloadPDF()">Download CV (PDF)</a>
+
+  <!-- Script untuk download PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    function downloadPDF() {
+      const element = document.getElementById('cv');
+      html2pdf().from(element).save('CV_Stephanie_Kezia_Yohanna.pdf');
+    }
+  </script>
 </body>
 </html>
