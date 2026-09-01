@@ -1,289 +1,249 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pig Puzzle</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Race Car</title>
+
 <style>
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{
+body{
     margin:0;
-    min-height:100vh;
-    font-family:Arial,Helvetica,sans-serif;
-    background:linear-gradient(180deg,#faf8f5 0%,#f5f0ed 100%);
-    color:#4d4542;
-    display:flex;
-    justify-content:center;
-  }
-  .app{
-    width:min(100%,620px);
-    min-height:100vh;
-    padding:18px 18px 28px;
-    position:relative;
-    overflow:hidden;
-  }
-  .top{
-    display:grid;
-    grid-template-columns:70px 1fr 1fr 48px;
-    align-items:center;
-    gap:6px;
-    margin-bottom:10px;
-  }
-  .back,.settings{
-    border:0;background:transparent;font-size:31px;color:#716a68;
-    cursor:pointer;
-  }
-  .settings{font-size:26px}
-  .stat{text-align:center;font-weight:700}
-  .stat small{display:block;font-size:13px;color:#777;margin-bottom:1px}
-  .stat strong{font-size:25px;color:#4d4644}
-  .progress{
     text-align:center;
-    font-size:25px;
-    font-weight:800;
-    color:#55a36a;
-    margin:0 0 12px;
-  }
-  .rules{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:8px;
-    margin:4px 0 18px;
-  }
-  .rule{
-    min-height:66px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:7px;
-    font-size:11px;
-    line-height:1.15;
-    color:#5d5653;
-    font-weight:600;
-  }
-  .mini{
-    width:34px;height:34px;
-    display:grid;grid-template-columns:repeat(3,1fr);
-    flex:none;
-  }
-  .mini span{
-    border:1px solid #d9d3d0;
-    background:#ece8e5;
-    position:relative;
-  }
-  .mini .x:after,.mini .x:before{
-    content:"";position:absolute;left:4px;right:4px;top:15px;height:3px;
-    background:#8b817d;border-radius:4px;
-  }
-  .mini .x:after{transform:rotate(45deg)}
-  .mini .x:before{transform:rotate(-45deg)}
-  .board-wrap{
-    background:rgba(255,255,255,.48);
-    padding:7px;
-    border-radius:18px;
-    box-shadow:0 7px 24px rgba(70,50,40,.08);
-  }
-  .board{
-    width:100%;
-    aspect-ratio:1;
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    grid-template-rows:repeat(6,1fr);
-    gap:7px;
-  }
-  .cell{
-    border:0;
-    border-radius:7px;
-    position:relative;
-    cursor:pointer;
-    min-width:0;
+    background:#222;
+    font-family:Arial;
+    color:white;
+}
+
+#game{
+    width:300px;
+    height:500px;
+    background:#555;
+    margin:auto;
     overflow:hidden;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
-    transition:transform .12s,filter .12s;
-  }
-  .cell:active{transform:scale(.94)}
-  .yellow{background:#c9ad58}.brown{background:#9a604e}
-  .green{background:#58b967}.purple{background:#8b79c9}
-  .pink{background:#d883bd}.red{background:#bc5b4c}
-  .cell.x:before,.cell.x:after{
-    content:"";position:absolute;
-    width:67%;height:7px;border-radius:10px;
-    left:16.5%;top:calc(50% - 3.5px);
-    background:rgba(250,250,250,.92);
-  }
-  .cell.x:before{transform:rotate(45deg)}
-  .cell.x:after{transform:rotate(-45deg)}
-  .cell.user-x:before,.cell.user-x:after{background:#eee}
-  .pig{
+    position:relative;
+    border:5px solid white;
+}
+
+.road{
     position:absolute;
-    inset:7%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:clamp(30px,8vw,54px);
-    filter:drop-shadow(0 3px 1px rgba(0,0,0,.16));
-    animation:pop .18s ease-out;
-  }
-  @keyframes pop{from{transform:scale(.5);opacity:.2}to{transform:scale(1);opacity:1}}
-  .wrong{animation:shake .25s}
-  @keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-4px)}}
-  .controls{
-    display:flex;justify-content:center;gap:48px;margin-top:28px;
-  }
-  .tool{
-    border:0;background:transparent;position:relative;cursor:pointer;
-    width:76px;height:76px;border-radius:50%;
-    background:rgba(255,255,255,.8);
-    box-shadow:0 5px 15px rgba(70,50,40,.09);
-    font-size:42px;
-  }
-  .badge{
-    position:absolute;right:-2px;top:-7px;
-    background:#d94b45;color:white;border-radius:50%;
-    width:29px;height:29px;display:flex;align-items:center;justify-content:center;
-    font-size:13px;font-weight:800;
-  }
-  .hint-text{text-align:center;color:#9a918d;font-size:12px;margin-top:12px}
-  .toast{
-    position:fixed;left:50%;bottom:22px;transform:translate(-50%,120px);
-    background:#4d4542;color:#fff;padding:12px 18px;border-radius:18px;
-    font-size:13px;font-weight:700;transition:.25s;z-index:20;
-    box-shadow:0 8px 22px rgba(0,0,0,.18);white-space:nowrap;
-  }
-  .toast.show{transform:translate(-50%,0)}
-  .win{
-    position:fixed;inset:0;background:rgba(55,43,38,.45);display:none;
-    align-items:center;justify-content:center;padding:25px;z-index:30;
-  }
-  .modal{
-    width:min(100%,360px);background:#fff;border-radius:25px;padding:28px;text-align:center;
-    box-shadow:0 15px 50px rgba(0,0,0,.2)
-  }
-  .modal .big{font-size:72px}
-  .modal h2{margin:5px 0 8px;color:#514844}
-  .modal p{margin:0 0 18px;color:#817773}
-  .next{
-    border:0;border-radius:14px;padding:13px 28px;background:#67b66f;color:white;
-    font-weight:800;font-size:15px;cursor:pointer
-  }
-  @media(max-width:420px){
-    .app{padding:12px 11px 22px}
-    .top{grid-template-columns:48px 1fr 1fr 40px}
-    .rules{gap:2px}.rule{font-size:9px;min-height:58px}
-    .mini{width:29px;height:29px}.mini .x:after,.mini .x:before{top:13px}
-    .board{gap:5px}.controls{gap:35px;margin-top:23px}
-  }
+    width:10px;
+    height:80px;
+    background:white;
+    left:145px;
+    animation:road 1s linear infinite;
+}
+
+@keyframes road{
+    from{top:-100px}
+    to{top:500px}
+}
+
+
+#player{
+    width:50px;
+    height:80px;
+    background:red;
+    position:absolute;
+    bottom:20px;
+    left:125px;
+    border-radius:10px;
+    font-size:35px;
+}
+
+
+.enemy{
+    width:50px;
+    height:80px;
+    background:yellow;
+    position:absolute;
+    top:-100px;
+    border-radius:10px;
+    font-size:35px;
+}
+
+
+button{
+    padding:15px 25px;
+    margin:10px;
+    border:0;
+    border-radius:20px;
+    background:#ff6688;
+    color:white;
+}
 </style>
+
 </head>
+
 <body>
-<div class="app">
-  <div class="top">
-    <button class="back" onclick="resetLevel()" aria-label="ulang">‹</button>
-    <div class="stat"><small>Level</small><strong id="level">4</strong></div>
-    <div class="stat"><small>Skor</small><strong id="score">0</strong></div>
-    <button class="settings" onclick="showToast('Pig Puzzle 🐷')" aria-label="pengaturan">⚙</button>
-  </div>
 
-  <div class="progress" id="progress">🐷 0/6</div>
+<h1>🏎️ Race Car</h1>
 
-  <div class="rules">
-    <div class="rule">
-      <div class="mini"><span class="x"></span><span class="x"></span><span></span><span class="x"></span><span></span><span></span><span class="x"></span><span></span><span></span></div>
-      <span>1 Babi per<br>warna</span>
-    </div>
-    <div class="rule">
-      <div class="mini"><span class="x"></span><span class="x"></span><span class="x"></span><span></span><span class="x"></span><span></span><span></span><span class="x"></span><span></span></div>
-      <span>1 Babi per<br>kolom & baris</span>
-    </div>
-    <div class="rule">
-      <div class="mini"><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span><span class="x"></span></div>
-      <span>Babi tidak boleh<br>bersentuhan</span>
-    </div>
-  </div>
+<h2>
+Score : <span id="score">0</span>
+<br>
+Level : <span id="level">1</span>
+</h2>
 
-  <div class="board-wrap"><div class="board" id="board"></div></div>
 
-  <div class="controls">
-    <button class="tool" onclick="usePig()" aria-label="babi">🐷<span class="badge" id="pigTools">5</span></button>
-    <button class="tool" onclick="useHint()" aria-label="petunjuk">💡<span class="badge" id="hintTools">5</span></button>
-  </div>
-  <div class="hint-text">Ketuk kotak untuk menaruh babi • ketuk lagi untuk menghapus</div>
+<div id="game">
+
+<div id="player">🏎️</div>
+
 </div>
 
-<div class="toast" id="toast"></div>
 
-<div class="win" id="win">
-  <div class="modal">
-    <div class="big">🐷🎉</div>
-    <h2>Level selesai!</h2>
-    <p>Kamu berhasil menempatkan 6 babi dengan benar.</p>
-    <button class="next" onclick="nextLevel()">Level berikutnya</button>
-  </div>
-</div>
+<button onclick="kiri()">⬅️</button>
+<button onclick="kanan()">➡️</button>
+
 
 <script>
-const regions = [
- ['yellow','yellow','yellow','green','purple','purple'],
- ['yellow','red','green','green','purple','purple'],
- ['red','red','green','green','green','purple'],
- ['red','red','red','green','blue','blue'],
- ['red','red','pink','blue','blue','blue'],
- ['pink','pink','pink','pink','blue','blue']
-];
 
-const solutions = [
- [0,3,5,1,4,2],
- [0,3,5,2,4,1],
- [0,4,1,3,5,2],
- [0,4,2,5,1,3],
- [0,5,2,4,1,3],
- [1,3,5,0,2,4],
- [1,4,0,3,5,2],
- [2,4,1,5,0,3],
- [2,5,0,4,1,3],
- [3,0,5,1,4,2]
-];
+let player=document.getElementById("player");
+let game=document.getElementById("game");
 
-let levelIndex = 0;
-let score = 0;
-let placed = new Set();
-let pigTools = 5, hintTools = 5;
+let score=0;
+let level=1;
+let posisi=125;
+let speed=5;
 
-function key(r,c){return r+"-"+c}
-function solutionSet(){
-  const sol=solutions[levelIndex % solutions.length];
-  return new Set(sol.map((c,r)=>key(r,c)));
+
+function jalan(){
+
+let garis=document.createElement("div");
+
+garis.className="road";
+
+game.appendChild(garis);
+
+
+setTimeout(()=>{
+garis.remove();
+},1000);
+
 }
-function render(){
-  const board=document.getElementById('board');
-  board.innerHTML='';
-  const sol=solutionSet();
 
-  for(let r=0;r<6;r++){
-    for(let c=0;c<6;c++){
-      const cell=document.createElement('button');
-      cell.className='cell '+regions[r][c];
-      cell.setAttribute('aria-label',`baris ${r+1} kolom ${c+1}`);
 
-      // Decorative starting X's, similar to the reference game.
-      const decorative = ((r*7+c*3+levelIndex*2)%5===0) && !sol.has(key(r,c));
-      if(decorative) cell.classList.add('x');
+setInterval(jalan,300);
 
-      if(placed.has(key(r,c))){
-        cell.classList.remove('x');
-        const pig=document.createElement('span');
-        pig.className='pig';
-        pig.textContent='🐷';
-        cell.appendChild(pig);
-      }
 
-      cell.onclick=()=>tapCell(r,c,cell);
-      board.appendChild(cell);
-    }
-  }
-  document.getElementById('progress').textContent=`🐷 ${placed.size}/6`;
-  document.getElementById('score').textContent=score;
-  document.getElementById('level').textContent=4+levelIndex;
-  document.getElementById('pigTools').textContent=pigTools;
-  document.getElementById('hintTools').textContent=hintTools;
+
+function musuh(){
+
+let enemy=document.createElement("div");
+
+enemy.className="enemy";
+
+enemy.innerHTML="🚗";
+
+enemy.style.left=
+Math.floor(Math.random()*250)+"px";
+
+
+game.appendChild(enemy);
+
+
+let turun=setInterval(()=>{
+
+let y=enemy.offsetTop+speed;
+
+enemy.style.top=y+"px";
+
+
+if(y>500){
+
+enemy.remove();
+
+clearInterval(turun);
+
+score++;
+
+document.getElementById("score").innerHTML=score;
+
+
+if(score%10==0){
+
+level++;
+
+speed++;
+
+document.getElementById("level").innerHTML=level;
+
 }
+
+}
+
+
+
+if(tabrak(enemy)){
+
+alert("Game Over! Score: "+score);
+
+location.reload();
+
+}
+
+
+},20);
+
+
+}
+
+
+
+setInterval(musuh,1500);
+
+
+
+function kiri(){
+
+posisi-=30;
+
+if(posisi<0)
+posisi=0;
+
+player.style.left=posisi+"px";
+
+}
+
+
+
+function kanan(){
+
+posisi+=30;
+
+if(posisi>250)
+posisi=250;
+
+player.style.left=posisi+"px";
+
+}
+
+
+
+function tabrak(e){
+
+let a=player.getBoundingClientRect();
+let b=e.getBoundingClientRect();
+
+return !(a.right<b.left||
+a.left>b.right||
+a.bottom<b.top||
+a.top>b.bottom);
+
+}
+
+
+
+document.addEventListener("keydown",e=>{
+
+if(e.key=="ArrowLeft")
+kiri();
+
+if(e.key=="ArrowRight")
+kanan();
+
+});
+
+</script>
+
+</body>
+</html>
