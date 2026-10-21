@@ -3,37 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlowMatch - Beautify Your Lips</title>
-  <!-- Google Fonts & FontAwesome Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>GlowMatch AI - Lip Tint Detector & Product Match</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
     body {
       background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #db2777 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
     }
 
     .card {
       width: 100%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
       border-radius: 24px;
-      padding: 25px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.6);
       text-align: center;
     }
 
@@ -43,45 +37,31 @@
       color: #be185d;
       padding: 4px 14px;
       border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: 1px;
       margin-bottom: 8px;
     }
 
-    h2 {
-      color: #831843;
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
+    h2 { color: #831843; font-size: 22px; font-weight: 700; margin-bottom: 15px; }
 
-    /* Video Frame dengan Ornamen Estetik */
     .video-wrapper {
       position: relative;
       width: 100%;
-      border-radius: 20px;
+      border-radius: 18px;
       overflow: hidden;
       aspect-ratio: 4/3;
-      background: #111;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+      background: #000;
       border: 3px solid #f472b6;
     }
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    video { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Garis Panduan Oval Wajah dengan Animasi Glow */
     .face-guide {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 38%;
-      height: 52%;
+      width: 38%; height: 50%;
       border: 2px dashed #ffffff;
       border-radius: 50%;
       box-shadow: 0 0 15px rgba(236, 72, 153, 0.8), 0 0 0 9999px rgba(0, 0, 0, 0.35);
@@ -93,59 +73,28 @@
       100% { border-color: #f472b6; box-shadow: 0 0 20px rgba(244, 114, 182, 1), 0 0 0 9999px rgba(0,0,0,0.35); }
     }
 
-    .btn-group {
-      display: flex;
-      gap: 12px;
-      margin-top: 18px;
-    }
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; }
 
     button {
-      flex: 1;
-      padding: 12px 16px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      flex: 1; padding: 12px; border: none; border-radius: 12px;
+      font-weight: 600; font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
       transition: all 0.3s ease;
     }
 
-    .btn-switch {
-      background: #f3f4f6;
-      color: #374151;
-    }
-
-    .btn-switch:hover {
-      background: #e5e7eb;
-      transform: translateY(-2px);
-    }
+    .btn-switch { background: #f3f4f6; color: #374151; }
+    .btn-switch:hover { background: #e5e7eb; }
 
     .btn-analyze {
       background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+      color: white; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
     }
+    .btn-analyze:hover { transform: translateY(-2px); }
 
-    .btn-analyze:hover {
-      box-shadow: 0 6px 16px rgba(236, 72, 153, 0.6);
-      transform: translateY(-2px);
-    }
-
-    /* Kartu Hasil Analysis */
     .result-card {
-      margin-top: 20px;
-      padding: 18px;
-      background: #fff;
-      border-radius: 16px;
-      border: 1px solid #fbcfe8;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      display: none;
-      text-align: left;
-      animation: fadeIn 0.4s ease-in-out;
+      margin-top: 18px; padding: 16px; background: #fff;
+      border-radius: 16px; border: 1px solid #fbcfe8;
+      display: none; text-align: left; animation: fadeIn 0.4s ease-in-out;
     }
 
     @keyframes fadeIn {
@@ -153,62 +102,41 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
+    .tone-title { font-size: 14px; font-weight: 700; color: #be185d; margin-bottom: 2px; }
+    .tone-desc { font-size: 11px; color: #6b7280; margin-bottom: 12px; }
 
-    .undertone-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      color: white;
-      background: #db2777;
-    }
+    .section-label { font-size: 11px; color: #9ca3af; font-weight: 700; letter-spacing: 0.5px; margin-top: 10px; margin-bottom: 6px; }
 
-    .hue-tag {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .color-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .color-list, .product-list { display: flex; flex-direction: column; gap: 8px; }
 
     .color-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #fdf2f8;
-      padding: 10px 14px;
-      border-radius: 12px;
+      display: flex; align-items: center; gap: 10px;
+      background: #fdf2f8; padding: 8px 12px; border-radius: 10px;
     }
 
     .swatch {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); flex-shrink: 0;
     }
 
-    .color-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
+    .color-name { font-size: 12px; font-weight: 600; color: #374151; }
+
+    .product-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border: 1px solid #f3e8ff; padding: 8px 12px;
+      border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
     }
+
+    .product-info { font-size: 12px; }
+    .product-brand { font-weight: 700; color: #831843; display: block; }
+    .product-shade { color: #4b5563; font-size: 11px; }
+    .product-badge { font-size: 10px; background: #fce7f3; color: #be185d; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
   </style>
 </head>
 <body>
 
   <div class="card">
-    <span class="header-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> AI BEAUTY DETECTOR</span>
+    <span class="header-tag"><i class="fa-solid fa-sparkles"></i> AI BEAUTY DETECTOR</span>
     <h2>Lip Tint Matcher</h2>
 
     <div class="video-wrapper">
@@ -221,18 +149,19 @@
         <i class="fa-solid fa-camera-rotate"></i> Kamera
       </button>
       <button class="btn-analyze" onclick="analyzeSkin()">
-        <i class="fa-solid fa-heart"></i> Analisis
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Analisis Wajah
       </button>
     </div>
 
     <div id="result" class="result-card">
-      <div class="result-header">
-        <span id="undertoneBadge" class="undertone-badge">-</span>
-        <span id="hueVal" class="hue-tag">Hue: -</span>
-      </div>
+      <div class="tone-title" id="toneTitle">-</div>
+      <div class="tone-desc" id="toneDesc">-</div>
 
-      <p style="font-size: 12px; color: #6b7280; font-weight: 600; margin-bottom: 8px;">REKOMENDASI WARNA COCOK:</p>
+      <div class="section-label">WARNA LIP TINT COCOK:</div>
       <div id="listWarna" class="color-list"></div>
+
+      <div class="section-label">REKOMENDASI PRODUK LOKAL:</div>
+      <div id="listProduk" class="product-list"></div>
     </div>
   </div>
 
@@ -253,9 +182,7 @@
         });
         video.srcObject = currentStream;
         video.style.transform = (currentFacingMode === 'user') ? 'scaleX(-1)' : 'scaleX(1)';
-      } catch (err) { 
-        alert("Gagal membuka kamera. Izinkan akses kamera di browser kamu!"); 
-      }
+      } catch (err) { alert("Gagal buka kamera. Pastikan beri izin di browser!"); }
     }
 
     function switchCamera() {
@@ -270,9 +197,8 @@
       let d = max - min;
       s = max === 0 ? 0 : d / max;
 
-      if (max === min) {
-        h = 0; 
-      } else {
+      if (max === min) { h = 0; } 
+      else {
         switch (max) {
           case r: h = (g - b) / d + (g < b ? 6 : 0); break;
           case g: h = (b - r) / d + 2; break;
@@ -294,64 +220,164 @@
       const y = (canvas.height - h) / 2;
 
       const imgData = ctx.getImageData(x, y, w, h).data;
-      let totalH = 0, count = 0;
+      let totalH = 0, totalV = 0, count = 0;
 
       for (let i = 0; i < imgData.length; i += 16) {
         let r = imgData[i], g = imgData[i+1], b = imgData[i+2];
         let [hVal, sVal, vVal] = rgbToHsv(r, g, b);
         
-        if (vVal > 0.15 && vVal < 0.95 && sVal > 0.1) {
+        if (vVal > 0.12 && vVal < 0.98 && sVal > 0.08) {
           totalH += hVal;
+          totalV += vVal;
           count++;
         }
       }
 
-      if (count === 0) { 
-        alert("Pencahayaan kurang! Coba cari tempat yang lebih terang ya."); 
-        return; 
-      }
+      if (count === 0) { alert("Pencahayaan kurang, geser ke tempat terang!"); return; }
 
       let avgH = totalH / count;
-      let undertone = "";
-      let recommendations = [];
+      let avgV = totalV / count; // Tingkat Kecerahan/Value (Terang/Gelap Kulit)
 
-      if (avgH < 18 || avgH > 340) {
-        undertone = "COOL UNDERTONE";
-        recommendations = [
-          { name: "Plum Berry", hex: "#8E24AA" },
-          { name: "Cherry Red", hex: "#D50000" },
-          { name: "Magenta Rose", hex: "#C2185B" }
-        ];
-      } else if (avgH >= 18 && avgH <= 28) {
-        undertone = "NEUTRAL UNDERTONE";
-        recommendations = [
-          { name: "Dusty Rose", hex: "#D81B60" },
-          { name: "Mauve Nude", hex: "#BA68C8" },
-          { name: "Soft Coral Red", hex: "#E53935" }
-        ];
-      } else {
-        undertone = "WARM UNDERTONE";
-        recommendations = [
-          { name: "Brick Red", hex: "#B22222" },
-          { name: "Coral Pink", hex: "#FF7F50" },
-          { name: "Peach Nude", hex: "#FB8C00" }
-        ];
-      }
+      let resultData = getToneData(avgH, avgV);
 
-      document.getElementById('undertoneBadge').innerText = undertone;
-      document.getElementById('hueVal').innerText = `Hue Score: ${Math.round(avgH)}°`;
-      
-      const listContainer = document.getElementById('listWarna');
-      listContainer.innerHTML = "";
-      recommendations.forEach(item => {
-        listContainer.innerHTML += `
+      // Render Hasil
+      document.getElementById('toneTitle').innerText = resultData.title;
+      document.getElementById('toneDesc').innerText = resultData.desc;
+
+      // Render Warna
+      const listWarna = document.getElementById('listWarna');
+      listWarna.innerHTML = "";
+      resultData.colors.forEach(item => {
+        listWarna.innerHTML += `
           <div class="color-item">
             <div class="swatch" style="background:${item.hex}"></div>
             <span class="color-name">${item.name}</span>
           </div>`;
       });
 
+      // Render Rekomendasi Produk
+      const listProduk = document.getElementById('listProduk');
+      listProduk.innerHTML = "";
+      resultData.products.forEach(prod => {
+        listProduk.innerHTML += `
+          <div class="product-item">
+            <div class="product-info">
+              <span class="product-brand">${prod.brand}</span>
+              <span class="product-shade">${prod.shade}</span>
+            </div>
+            <span class="product-badge">${prod.price}</span>
+          </div>`;
+      });
+
       document.getElementById('result').style.display = 'block';
+    }
+
+    // Database Kategori Tone Kulit & Produk Lokal
+    function getToneData(hue, val) {
+      const isLight = val > 0.55; // Pemisah Kulit Terang vs Medium/Tan
+
+      // 1. Cool Undertone (Pink/Reddish)
+      if (hue < 18 || hue > 340) {
+        if (isLight) {
+          return {
+            title: "Fair to Light - Cool Undertone",
+            desc: "Kulit cenderung cerah dengan rona pinkish/dingin.",
+            colors: [
+              { name: "Cherry Pink", hex: "#E91E63" },
+              { name: "Light Berry", hex: "#C2185B" },
+              { name: "Soft Mauve", hex: "#BA68C8" }
+            ],
+            products: [
+              { brand: "Emina Glossy Stain", shade: "Shade 01 Autumn Bell", price: "± Rp 48k" },
+              { brand: "Barenbliss Peach Makes Perfect", shade: "Shade 02 Pretty Please", price: "± Rp 69k" },
+              { brand: "Implora Jelly Tint", shade: "Shade 02 Rose Star", price: "± Rp 20k" }
+            ]
+          };
+        } else {
+          return {
+            title: "Medium to Tan - Cool Undertone",
+            desc: "Kulit sawo matang / manis dengan rona berry/dingin.",
+            colors: [
+              { name: "Deep Plum", hex: "#7B1FA2" },
+              { name: "Wine Red", hex: "#880E4F" },
+              { name: "Magenta Brown", hex: "#AD1457" }
+            ],
+            products: [
+              { brand: "Hanasui Tintdorable Stain", shade: "Shade 05 Classy", price: "± Rp 20k" },
+              { brand: "Somethinc Ombrella Totem", shade: "Shade Underground", price: "± Rp 59k" },
+              { brand: "Barenbliss Lip Tint", shade: "Shade 10 Stay Classy", price: "± Rp 69k" }
+            ]
+          };
+        }
+      } 
+      // 2. Neutral Undertone (Netral)
+      else if (hue >= 18 && hue <= 28) {
+        if (isLight) {
+          return {
+            title: "Light to Medium - Neutral Undertone",
+            desc: "Kulit cerah hingga medium dengan rona seimbang.",
+            colors: [
+              { name: "Dusty Rose", hex: "#D81B60" },
+              { name: "Peach Pink", hex: "#FF8A80" },
+              { name: "Rosy Nude", hex: "#E57373" }
+            ],
+            products: [
+              { brand: "Wardah Everyday Lip Tint", shade: "Shade 01 Red Set Glow", price: "± Rp 38k" },
+              { brand: "Hanasui Tintdorable Stain", shade: "Shade 01 Cherry", price: "± Rp 20k" },
+              { brand: "Luxcrime Ultra Light Stain", shade: "Shade Latte", price: "± Rp 75k" }
+            ]
+          };
+        } else {
+          return {
+            title: "Tan / Sawo Matang - Neutral Undertone",
+            desc: "Kulit sawo matang khas Indonesia berona seimbang.",
+            colors: [
+              { name: "Rosewood", hex: "#B71C1C" },
+              { name: "Warm Chestnut", hex: "#A52A2A" },
+              { name: "Terracotta Nude", hex: "#D84315" }
+            ],
+            products: [
+              { brand: "Implora Jelly Tint", shade: "Shade 07 Sangria", price: "± Rp 20k" },
+              { brand: "Azarine Tinted Lippie Cake", shade: "Shade 02 Choco Biscuit", price: "± Rp 45k" },
+              { brand: "Somethinc Ombrella Totem", shade: "Shade Tobiko", price: "± Rp 59k" }
+            ]
+          };
+        }
+      } 
+      // 3. Warm Undertone (Kuning/Warm)
+      else {
+        if (isLight) {
+          return {
+            title: "Light to Medium - Warm Undertone",
+            desc: "Kulit kuning langsat berona hangat.",
+            colors: [
+              { name: "Coral Orange", hex: "#FF7F50" },
+              { name: "Fresh Peach", hex: "#FFB74D" },
+              { name: "Warm Coral Red", hex: "#FF5722" }
+            ],
+            products: [
+              { brand: "Barenbliss Peach Makes Perfect", shade: "Shade 01 Paradise Found", price: "± Rp 69k" },
+              { brand: "Hanasui Tintdorable Stain", shade: "Shade 02 Peach", price: "± Rp 20k" },
+              { brand: "Emina Glossy Stain", shade: "Shade 02 Apple Shower", price: "± Rp 48k" }
+            ]
+          };
+        } else {
+          return {
+            title: "Tan / Dark - Warm Undertone",
+            desc: "Kulit sawo matang/eksotis dengan rona hangat keemasan.",
+            colors: [
+              { name: "Brick Red / Merah Bata", hex: "#B22222" },
+              { name: "Warm Brownish Orange", hex: "#E65100" },
+              { name: "Deep Amber Coral", hex: "#BF360C" }
+            ],
+            products: [
+              { brand: "Implora Jelly Tint", shade: "Shade 06 Pumpkin", price: "± Rp 20k" },
+              { brand: "Hanasui Tintdorable Stain", shade: "Shade 06 Bloody", price: "± Rp 20k" },
+              { brand: "Luxcrime Ultra Light Stain", shade: "Shade Amber", price: "± Rp 75k" }
+            ]
+          };
+        }
+      }
     }
 
     startCamera();
