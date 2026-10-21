@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekomendasi Warna Lipstik & Liptint</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #fdf2f8;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #be185d;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #000;
+      aspect-ratio: 4 / 3;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Target area pengambilan warna sampel wajah */
+    .face-guide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40%;
+      height: 50%;
+      border: 2px dashed #f472b6;
+      border-radius: 50%;
+      pointer-events: none;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
+    }
+
+    .controls {
+      margin-top: 15px;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-switch {
+      background-color: #ec4899;
+      color: white;
+    }
+
+    .btn-switch:hover {
+      background-color: #db2777;
+    }
+
+    .btn-analyze {
+      background-color: #9333ea;
+      color: white;
+    }
+
+    .btn-analyze:hover {
+      background-color: #7e22ce;
+    }
+
+    .result-box {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: #fce7f3;
+      display: none;
+    }
+
+    .result-box h3 {
+      margin-top: 0;
+      color: #9d174d;
+    }
+
+    .undertone-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background-color: #be185d;
+      color: white;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .color-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .color-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+    }
+
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Deteksi Undertone & Lipstik</h2>
+
+  <div class="container">
+    <div class="video-wrapper">
+      <video id="webcam" autoplay playsinline></video>
+      <div class="face-guide"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-switch" onclick="switchCamera()">🔄 Ganti Kamera</button>
+      <button class="btn-analyze" onclick="analyzeSkin()">🔍 Analisis Warna</button>
+    </div>
+
+    <div id="result" class="result-box">
+      <h3>Hasil Analisis</h3>
+      <div>Undertone Kulit: <span id="undertoneText" class="undertone-badge">-</span></div>
+      <b>Rekomendasi Warna:</b>
+      <div id="colorRecommendations" class="color-list"></div>
+    </div>
+  </div>
+
+  <!-- Canvas tersembunyi untuk mengambil frame video -->
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Default kamera: 'user' (depan), bisa diganti ke 'environment' (belakang)
+    let currentFacingMode = 'user';
+    let currentStream = null;
+
+    // Menjalankan kamera
+    async function startCamera() {
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+      }
+
+      try {
+        const constraints = {
+          video: {
+            facingMode: currentFacingMode,
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          }
+        };
+
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = currentStream;
+
+        // Atur efek cermin hanya jika menggunakan kamera depan
+        if (currentFacingMode === 'user') {
+          video.style.transform = 'scaleX(-1)';
+        } else {
+          video.style.transform = 'scaleX(1)';
+        }
+      } catch (err) {
+        alert("Gagal mengakses kamera: " + err.message);
+      }
+    }
+
+    // Fungsi ganti kamera Depan / Belakang
+    function switchCamera() {
+      currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
+      startCamera();
+    }
+
+    // Analisis undertone dari piksel di area tengah (lingkaran panduan)
+    function analyzeSkin() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // Gambarkan frame video saat ini ke canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Ambil area piksel tengah wajah
+      const sampleWidth = canvas.width * 0.2;
+      const sampleHeight = canvas.height * 0.2;
+      const startX = (canvas.width - sampleWidth) / 2;
+      const startY = (canvas.height - sampleHeight) / 2;
+
+      const imgData = ctx.getImageData(startX, startY, sampleWidth, sampleHeight);
+      const data = imgData.data;
+
+      let totalR = 0, totalG = 0, totalB = 0;
+      let count = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        totalR += data[i];     // Red
+        totalG += data[i + 1]; // Green
+        totalB += data[i + 2]; // Blue
+        count++;
+      }
+
+      const avgR = totalR / count;
+      const avgG = totalG / count;
+      const avgB = totalB / count;
+
+      // Logika penentuan undertone
+      let undertone = "Warm";
+      if (avgR > avgB * 1.35) {
+        undertone = "Warm (Hangat)";
+      } else if (avgB * 1.1 > avgR) {
+        undertone = "Cool (Dingin)";
+      } else {
+        undertone = "Neutral (Netral)";
+      }
+
+      showResults(undertone);
+    }
+
+    // Menampilkan hasil analisis dan rekomendasi warna
+    function showResults(undertone) {
+      const undertoneText = document.getElementById('undertoneText');
+      const colorContainer = document.getElementById('colorRecommendations');
+      const resultBox = document.getElementById('result');
+
+      undertoneText.innerText = undertone;
+      colorContainer.innerHTML = '';
+
+      let recommendations = [];
+
+      if (undertone.includes("Warm")) {
+        recommendations = [
+          { name: "Peach / Coral", hex: "#FF7F50" },
+          { name: "Warm Red / Brick", hex: "#B22222" },
+          { name: "Nude Orange", hex: "#E9967A" }
+        ];
+      } else if (undertone.includes("Cool")) {
+        recommendations = [
+          { name: "Berry / Plum", hex: "#8E24AA" },
+          { name: "Cherry Red", hex: "#D50000" },
+          { name: "Mauve / Pinkish", hex: "#E1BEE7" }
+        ];
+      } else {
+        recommendations = [
+          { name: "Dusty Rose", hex: "#C2185B" },
+          { name: "Classic Red", hex: "#DC143C" },
+          { name: "Soft Nude", hex: "#E6C280" }
+        ];
+      }
+
+      recommendations.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'color-item';
+        div.innerHTML = `
+          <div class="color-swatch" style="background-color: ${item.hex}"></div>
+          <span><b>${item.name}</b> (${item.hex})</span>
+        `;
+        colorContainer.appendChild(div);
+      });
+
+      resultBox.style.display = 'block';
+    }
+
+    // Mulai kamera saat halaman dimuat
+    startCamera();
+  </script>
+</body>
+</html>
