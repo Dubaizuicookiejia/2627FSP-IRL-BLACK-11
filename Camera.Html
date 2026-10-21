@@ -3,23 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlowMatch AI - Lip Tint Detector & Product Match</title>
+  <title>GlowMatch AI - Lip Tint Detector & Shopee Store</title>
   <!-- Google Fonts & FontAwesome -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
     * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+
+    /* Background dengan Hiasan Pattern & Animasi Gelembung Glowing */
     body {
       background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #db2777 100%);
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.25) 2px, transparent 2px),
+        linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #db2777 100%);
+      background-size: 24px 24px, 100% 100%;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 15px;
+      padding: 20px 15px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Elemen Hiasan Background (Floating Glowing Orbs) */
+    .bg-decoration {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 8s infinite alternate ease-in-out;
+    }
+    .orb-1 { width: 250px; height: 250px; background: rgba(255, 255, 255, 0.4); top: -50px; left: -50px; }
+    .orb-2 { width: 300px; height: 300px; background: rgba(190, 24, 93, 0.3); bottom: -80px; right: -50px; animation-delay: -4s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(20px) scale(1.08); }
     }
 
     .card {
+      position: relative;
+      z-index: 1;
       width: 100%;
       max-width: 450px;
       background: rgba(255, 255, 255, 0.96);
@@ -27,7 +54,7 @@
       border-radius: 24px;
       padding: 22px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.7);
       text-align: center;
     }
 
@@ -105,7 +132,7 @@
     .tone-title { font-size: 14px; font-weight: 700; color: #be185d; margin-bottom: 2px; }
     .tone-desc { font-size: 11px; color: #6b7280; margin-bottom: 12px; }
 
-    .section-label { font-size: 11px; color: #9ca3af; font-weight: 700; letter-spacing: 0.5px; margin-top: 10px; margin-bottom: 6px; }
+    .section-label { font-size: 11px; color: #9ca3af; font-weight: 700; letter-spacing: 0.5px; margin-top: 12px; margin-bottom: 6px; }
 
     .color-list, .product-list { display: flex; flex-direction: column; gap: 8px; }
 
@@ -121,19 +148,37 @@
 
     .color-name { font-size: 12px; font-weight: 600; color: #374151; }
 
+    /* Style Tombol Link Produk Shopee */
     .product-item {
       display: flex; align-items: center; justify-content: space-between;
-      background: #fff; border: 1px solid #f3e8ff; padding: 8px 12px;
-      border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+      background: #fff; border: 1px solid #fed7aa; padding: 10px 12px;
+      border-radius: 12px; text-decoration: none; color: inherit;
+      transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .product-item:hover {
+      border-color: #f97316;
+      background: #fff7ed;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(249, 115, 22, 0.15);
     }
 
     .product-info { font-size: 12px; }
     .product-brand { font-weight: 700; color: #831843; display: block; }
     .product-shade { color: #4b5563; font-size: 11px; }
-    .product-badge { font-size: 10px; background: #fce7f3; color: #be185d; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+
+    .shopee-badge {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 11px; background: #ee4d2d; color: white;
+      padding: 4px 10px; border-radius: 20px; font-weight: 600; flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Hiasan Background Glowing Orbs -->
+  <div class="bg-decoration orb-1"></div>
+  <div class="bg-decoration orb-2"></div>
 
   <div class="card">
     <span class="header-tag"><i class="fa-solid fa-sparkles"></i> AI BEAUTY DETECTOR</span>
@@ -160,7 +205,7 @@
       <div class="section-label">WARNA LIP TINT COCOK:</div>
       <div id="listWarna" class="color-list"></div>
 
-      <div class="section-label">REKOMENDASI PRODUK LOKAL:</div>
+      <div class="section-label">REKOMENDASI PRODUK (KLIK UNTUK BELI):</div>
       <div id="listProduk" class="product-list"></div>
     </div>
   </div>
@@ -182,7 +227,7 @@
         });
         video.srcObject = currentStream;
         video.style.transform = (currentFacingMode === 'user') ? 'scaleX(-1)' : 'scaleX(1)';
-      } catch (err) { alert("Gagal buka kamera. Pastikan beri izin di browser!"); }
+      } catch (err) { alert("Gagal membuka kamera. Izinkan akses kamera di browser!"); }
     }
 
     function switchCamera() {
@@ -226,21 +271,20 @@
         let r = imgData[i], g = imgData[i+1], b = imgData[i+2];
         let [hVal, sVal, vVal] = rgbToHsv(r, g, b);
         
-        if (vVal > 0.12 && vVal < 0.98 && sVal > 0.08) {
+        if (vVal > 0.10 && vVal < 0.98 && sVal > 0.05) {
           totalH += hVal;
           totalV += vVal;
           count++;
         }
       }
 
-      if (count === 0) { alert("Pencahayaan kurang, geser ke tempat terang!"); return; }
+      if (count === 0) { alert("Pencahayaan kurang, coba geser ke area lebih terang!"); return; }
 
       let avgH = totalH / count;
-      let avgV = totalV / count; // Tingkat Kecerahan/Value (Terang/Gelap Kulit)
+      let avgV = totalV / count;
 
       let resultData = getToneData(avgH, avgV);
 
-      // Render Hasil
       document.getElementById('toneTitle').innerText = resultData.title;
       document.getElementById('toneDesc').innerText = resultData.desc;
 
@@ -255,125 +299,164 @@
           </div>`;
       });
 
-      // Render Rekomendasi Produk
+      // Render Link Shopee Produk
       const listProduk = document.getElementById('listProduk');
       listProduk.innerHTML = "";
       resultData.products.forEach(prod => {
+        // Buat link pencarian otomatis Shopee berdasarkan Nama Brand + Shade
+        const searchQuery = encodeURIComponent(`${prod.brand} ${prod.shade}`);
+        const shopeeUrl = `https://shopee.co.id/search?keyword=${searchQuery}`;
+
         listProduk.innerHTML += `
-          <div class="product-item">
+          <a href="${shopeeUrl}" target="_blank" class="product-item">
             <div class="product-info">
               <span class="product-brand">${prod.brand}</span>
               <span class="product-shade">${prod.shade}</span>
             </div>
-            <span class="product-badge">${prod.price}</span>
-          </div>`;
+            <div class="shopee-badge">
+              <i class="fa-solid fa-bag-shopping"></i> Beli
+            </div>
+          </a>`;
       });
 
       document.getElementById('result').style.display = 'block';
     }
 
-    // Database Kategori Tone Kulit & Produk Lokal
+    // Database 8 Variasi Tone Kulit + Produk Shopee
     function getToneData(hue, val) {
-      const isLight = val > 0.55; // Pemisah Kulit Terang vs Medium/Tan
+      // Pembagian tingkat kecerahan kulit (Fair, Light, Medium, Dark)
+      const isFair = val > 0.75;
+      const isLight = val > 0.55 && val <= 0.75;
+      const isMedium = val > 0.35 && val <= 0.55;
 
-      // 1. Cool Undertone (Pink/Reddish)
+      // 1. COOL UNDERTONE (Pinkish/Dingin)
       if (hue < 18 || hue > 340) {
-        if (isLight) {
+        if (isFair) {
           return {
-            title: "Fair to Light - Cool Undertone",
-            desc: "Kulit cenderung cerah dengan rona pinkish/dingin.",
+            title: "Fair / Porcelain - Cool Undertone",
+            desc: "Kulit sangat cerah/putih dengan rona pinkish dingin.",
             colors: [
-              { name: "Cherry Pink", hex: "#E91E63" },
-              { name: "Light Berry", hex: "#C2185B" },
+              { name: "Soft Cherry", hex: "#FF4081" },
+              { name: "Baby Pink", hex: "#F48FB1" },
+              { name: "Cool Berry", hex: "#C2185B" }
+            ],
+            products: [
+              { brand: "Emina Glossy Stain", shade: "01 Autumn Bell" },
+              { brand: "Barenbliss Peach Makes Perfect", shade: "02 Pretty Please" },
+              { brand: "Implora Jelly Tint", shade: "02 Rose Star" }
+            ]
+          };
+        } else if (isLight || isMedium) {
+          return {
+            title: "Light to Medium - Cool Undertone",
+            desc: "Kulit cerah/sedang berona kemerahan atau dingin.",
+            colors: [
+              { name: "Magenta Rose", hex: "#D81B60" },
+              { name: "Plum Berry", hex: "#8E24AA" },
+              { name: "Fresh Cherry", hex: "#D50000" }
+            ],
+            products: [
+              { brand: "Hanasui Tintdorable Stain", shade: "05 Classy" },
+              { brand: "Somethinc Ombrella Totem", shade: "Underground" },
+              { brand: "RAD Lip Tint", shade: "Brave" }
+            ]
+          };
+        } else {
+          return {
+            title: "Deep / Tan - Cool Undertone",
+            desc: "Kulit sawo matang / gelap dengan rona berry manis.",
+            colors: [
+              { name: "Deep Plum", hex: "#4A148C" },
+              { name: "Wine Red", hex: "#880E4F" },
+              { name: "Dark Magenta", hex: "#880E4F" }
+            ],
+            products: [
+              { brand: "Somethinc Ombrella Totem", shade: "Tuscan" },
+              { brand: "Implora Jelly Tint", shade: "07 Sangria" },
+              { brand: "Barenbliss Lip Tint", shade: "10 Stay Classy" }
+            ]
+          };
+        }
+      } 
+      // 2. NEUTRAL UNDERTONE (Netral)
+      else if (hue >= 18 && hue <= 28) {
+        if (isFair || isLight) {
+          return {
+            title: "Light - Neutral Undertone",
+            desc: "Kulit cerah berona seimbang (tidak terlalu pink/kuning).",
+            colors: [
+              { name: "Dusty Rose", hex: "#EC407A" },
+              { name: "Rosy Nude", hex: "#E57373" },
               { name: "Soft Mauve", hex: "#BA68C8" }
             ],
             products: [
-              { brand: "Emina Glossy Stain", shade: "Shade 01 Autumn Bell", price: "± Rp 48k" },
-              { brand: "Barenbliss Peach Makes Perfect", shade: "Shade 02 Pretty Please", price: "± Rp 69k" },
-              { brand: "Implora Jelly Tint", shade: "Shade 02 Rose Star", price: "± Rp 20k" }
+              { brand: "Wardah Everyday Lip Tint", shade: "01 Red Set Glow" },
+              { brand: "Hanasui Tintdorable Stain", shade: "01 Cherry" },
+              { brand: "Luxcrime Ultra Light Stain", shade: "Latte" }
             ]
           };
         } else {
           return {
-            title: "Medium to Tan - Cool Undertone",
-            desc: "Kulit sawo matang / manis dengan rona berry/dingin.",
-            colors: [
-              { name: "Deep Plum", hex: "#7B1FA2" },
-              { name: "Wine Red", hex: "#880E4F" },
-              { name: "Magenta Brown", hex: "#AD1457" }
-            ],
-            products: [
-              { brand: "Hanasui Tintdorable Stain", shade: "Shade 05 Classy", price: "± Rp 20k" },
-              { brand: "Somethinc Ombrella Totem", shade: "Shade Underground", price: "± Rp 59k" },
-              { brand: "Barenbliss Lip Tint", shade: "Shade 10 Stay Classy", price: "± Rp 69k" }
-            ]
-          };
-        }
-      } 
-      // 2. Neutral Undertone (Netral)
-      else if (hue >= 18 && hue <= 28) {
-        if (isLight) {
-          return {
-            title: "Light to Medium - Neutral Undertone",
-            desc: "Kulit cerah hingga medium dengan rona seimbang.",
-            colors: [
-              { name: "Dusty Rose", hex: "#D81B60" },
-              { name: "Peach Pink", hex: "#FF8A80" },
-              { name: "Rosy Nude", hex: "#E57373" }
-            ],
-            products: [
-              { brand: "Wardah Everyday Lip Tint", shade: "Shade 01 Red Set Glow", price: "± Rp 38k" },
-              { brand: "Hanasui Tintdorable Stain", shade: "Shade 01 Cherry", price: "± Rp 20k" },
-              { brand: "Luxcrime Ultra Light Stain", shade: "Shade Latte", price: "± Rp 75k" }
-            ]
-          };
-        } else {
-          return {
-            title: "Tan / Sawo Matang - Neutral Undertone",
-            desc: "Kulit sawo matang khas Indonesia berona seimbang.",
+            title: "Medium / Sawo Matang - Neutral Undertone",
+            desc: "Kulit sawo matang alami khas Indonesia yang netral.",
             colors: [
               { name: "Rosewood", hex: "#B71C1C" },
-              { name: "Warm Chestnut", hex: "#A52A2A" },
-              { name: "Terracotta Nude", hex: "#D84315" }
+              { name: "Warm Terracotta", hex: "#D84315" },
+              { name: "Nude Caramel", hex: "#A52A2A" }
             ],
             products: [
-              { brand: "Implora Jelly Tint", shade: "Shade 07 Sangria", price: "± Rp 20k" },
-              { brand: "Azarine Tinted Lippie Cake", shade: "Shade 02 Choco Biscuit", price: "± Rp 45k" },
-              { brand: "Somethinc Ombrella Totem", shade: "Shade Tobiko", price: "± Rp 59k" }
+              { brand: "Implora Jelly Tint", shade: "08 Burnt Orange" },
+              { brand: "Azarine Tinted Lippie Cake", shade: "02 Choco Biscuit" },
+              { brand: "Somethinc Ombrella Totem", shade: "Tobiko" }
             ]
           };
         }
       } 
-      // 3. Warm Undertone (Kuning/Warm)
+      // 3. WARM UNDERTONE (Kuning/Hangat)
       else {
-        if (isLight) {
+        if (isFair || isLight) {
           return {
-            title: "Light to Medium - Warm Undertone",
-            desc: "Kulit kuning langsat berona hangat.",
+            title: "Light - Warm Undertone",
+            desc: "Kulit cerah/kuning langsat terang berona hangat.",
             colors: [
-              { name: "Coral Orange", hex: "#FF7F50" },
               { name: "Fresh Peach", hex: "#FFB74D" },
-              { name: "Warm Coral Red", hex: "#FF5722" }
+              { name: "Coral Pink", hex: "#FF7F50" },
+              { name: "Warm Orange", hex: "#FF5722" }
             ],
             products: [
-              { brand: "Barenbliss Peach Makes Perfect", shade: "Shade 01 Paradise Found", price: "± Rp 69k" },
-              { brand: "Hanasui Tintdorable Stain", shade: "Shade 02 Peach", price: "± Rp 20k" },
-              { brand: "Emina Glossy Stain", shade: "Shade 02 Apple Shower", price: "± Rp 48k" }
+              { brand: "Barenbliss Peach Makes Perfect", shade: "01 Paradise Found" },
+              { brand: "Hanasui Tintdorable Stain", shade: "02 Peach" },
+              { brand: "Emina Glossy Stain", shade: "02 Apple Shower" }
+            ]
+          };
+        } else if (isMedium) {
+          return {
+            title: "Kuning Langsat - Warm Undertone",
+            desc: "Kulit kuning langsat / medium hangat.",
+            colors: [
+              { name: "Warm Coral Red", hex: "#E64A19" },
+              { name: "Brick Orange", hex: "#D84315" },
+              { name: "Peachy Nude", hex: "#FB8C00" }
+            ],
+            products: [
+              { brand: "Hanasui Tintdorable Stain", shade: "03 Ruby" },
+              { brand: "Implora Jelly Tint", shade: "06 Pumpkin" },
+              { brand: "Luxcrime Ultra Light Stain", shade: "Amber" }
             ]
           };
         } else {
           return {
-            title: "Tan / Dark - Warm Undertone",
-            desc: "Kulit sawo matang/eksotis dengan rona hangat keemasan.",
+            title: "Tan / Deep - Warm Undertone",
+            desc: "Kulit eksotis/sawo matang gelap berona hangat keemasan.",
             colors: [
               { name: "Brick Red / Merah Bata", hex: "#B22222" },
-              { name: "Warm Brownish Orange", hex: "#E65100" },
-              { name: "Deep Amber Coral", hex: "#BF360C" }
+              { name: "Deep Amber Orange", hex: "#BF360C" },
+              { name: "Brownish Coral", hex: "#E65100" }
             ],
             products: [
-              { brand: "Implora Jelly Tint", shade: "Shade 06 Pumpkin", price: "± Rp 20k" },
-              { brand: "Hanasui Tintdorable Stain", shade: "Shade 06 Bloody", price: "± Rp 20k" },
-              { brand: "Luxcrime Ultra Light Stain", shade: "Shade Amber", price: "± Rp 75k" }
+              { brand: "Hanasui Tintdorable Stain", shade: "06 Bloody" },
+              { brand: "Somethinc Ombrella Totem", shade: "Lover" },
+              { brand: "Implora Jelly Tint", shade: "09 Plum" }
             ]
           };
         }
